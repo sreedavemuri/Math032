@@ -1,0 +1,146 @@
+---
+title: "Sample Statistics"
+author: "Sreeda Vemuri"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+This assignment will introduce guide students in exploring and summarizing data while dealing with an outlier.  First, type your full name in the `author` field above.
+
+```{r, message = FALSE, warning = FALSE}
+# be sure to run lines of code like this to load code libraries before running subsequent code
+library("dplyr")   #for the pipe (%>%) operator
+library("ggplot2") #modern data visualization
+library("readr")   #to be able to load a CSV file
+library("stringr") #tools for strings and regular expressions
+library("tidyr")   #for the 'separate' tool
+```
+
+---
+
+# About the Data
+
+This week's data about Covid-19 cases is from [USA Facts](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/), and was downloaded on July 3, 2020.
+
+```{r, message = FALSE, warning = FALSE}
+df_raw <- read_csv("covid_confirmed_usafacts.csv")
+
+df_with_outlier <- df_raw %>%
+  filter(State == "CA") %>%
+  select(c("County Name", "7/3/20")) %>%
+  filter(str_detect(`County Name`, "County")) %>%
+  mutate(county = str_replace(`County Name`, " County", "")) %>%
+  select(c("county", "7/3/20")) %>%
+  rename(cases = `7/3/20`) %>%
+  mutate(zscore = as.vector(scale(cases)))
+
+df_without_outlier <- df_with_outlier %>%
+  filter(county != "Los Angeles")
+
+glimpse(df_with_outlier)
+
+mean(df_without_outlier$cases, na.rm = TRUE)
+#median()
+#sd()
+
+df_with_outlier %>%
+  filter(county %in% c("Los Angeles", "Merced")) %>%
+  ggplot(aes(x = county, y = cases, fill = county)) +
+  geom_bar(stat = "identity") +
+  geom_hline(yintercept = 12345, color = "black", size = 2) +
+  labs(title = "Covid-19 cases in California",
+       subtitle = "Mean in red, median in blue; as of July 3, 2020",
+       caption = "Source: USA Facts",
+       x = "county",
+       y = "cases") +
+  theme(legend.position = "none")
+
+print(df_with_outlier$county)
+```
+
+As you can see, for the purposes of this statistics assignment, we are treating the number of cases in Los Angeles county as an outlier.
+
+---
+
+# Sample Statistics
+
+* Using `R` code in a code block, compute the mean, median, and standard deviation for the number of Covid-19 cases with and without the outlier.  That is, there should be 6 calculations here.
+* After the code block, type (at least) 3 sentences to describe the differences between the means, median, and standard deviation with and without the outlier. 
+
+```{r, echo = TRUE, eval = TRUE}
+
+mean(df_with_outlier$cases, na.rm = TRUE)
+
+mean (df_without_outlier$cases, na.rm = TRUE)
+
+median(df_with_outlier$cases, na.rm = TRUE)
+
+median(df_without_outlier$cases, na.rm = TRUE)
+
+sd(df_with_outlier$cases, na.rm = TRUE)
+
+sd(df_without_outlier$cases, na.rm = TRUE)
+
+```
+```{r, echo = TRUE, eval = FALSE}
+The mean seems to be very different from each other, I think LA county is weighing down a lot of cases on the average. And the median has to do with the order, which means that the median would not be very helpful in calculating the number of cases in california. The standard deviation tells us the variation in the number of cases, and the standard deviation without LA is closer to the mean, proving that LA is the outlier of the set. 
+
+```
+
+---
+
+# Visualization
+
+Build two bar plots, each with 7 counties (including Merced), and
+
+1. a plot that does not include Los Angeles, has a red horizontal line at the mean number of cases (without outlier), and has a blue horizontal line at the median number of cases (without outlier)
+2. a plot that includes Los Angeles, has a red horizontal line at the mean number of cases (with outlier), and has a blue horizontal line at the median number of cases (with outlier)
+
+Type (at least) 3 sentences to describe the differences between the graphs.
+
+
+```{r, echo = TRUE, eval = TRUE}
+
+df_with_outlier %>%
+  filter(county %in% c("Alameda", "Fresno", "San Bernardino", "Santa Clara", "Amador", "Sacramento", "Merced")) %>%
+  ggplot(aes(x = county, y = cases, fill = county)) +
+  geom_bar(stat = "identity") +
+  geom_hline(yintercept = mean (df_without_outlier$cases), color = "Red", size = 2) +
+  geom_hline(yintercept =median(df_without_outlier$cases), color = "Blue", size = 2) + 
+  
+  labs(title = "Covid-19 cases in California",
+       subtitle = "Mean in red, median in blue; as of July 3, 2020",
+       caption = "Source: USA Facts",
+       x = "county",
+       y = "cases") +
+  theme(legend.position = "none")
+```
+
+```{r, echo = TRUE, eval = TRUE}
+
+df_with_outlier %>%
+  filter(county %in% c("Alameda", "Fresno", "San Bernardino", "Santa Clara", "Los Angeles", "Sacramento", "Merced")) %>%
+  ggplot(aes(x = county, y = cases, fill = county)) +
+  geom_bar(stat = "identity") +
+  geom_hline(yintercept = mean (df_with_outlier$cases), color = "Red", size = 2) +
+  geom_hline(yintercept =median(df_with_outlier$cases), color = "Blue", size = 2) + 
+  
+  labs(title = "Covid-19 cases in California",
+       subtitle = "Mean in red, median in blue; as of July 3, 2020",
+       caption = "Source: USA Facts",
+       x = "county",
+       y = "cases") +
+  theme(legend.position = "none")
+```
+
+
+```{r, echo = TRUE, eval = FALSE}
+
+Graph 1 is more elaborate with the numbers of the other counties which help, give a better picture of what is happening in the other counties, where as in Graph 2, Los Angeles is the outlier that is making the numbers of the other counties seem insignificant relatively. The Mean of the graphs are both explaining the mean and median with and without the outliers, but the median doesn't seem to to be as effected as the mean, but in Graph 2, both are insignificant. 
+```
+
+---
+
+# Epilogue
+
+Save your work in the "Math 32_-_Exploration 2_-_Binomial Distribution_-_your name.rmd" convention, `knit` the code, and then upload the HTML file here back into our CatCourses page.

@@ -1,0 +1,135 @@
+---
+title: "Exploration 7:  Regression Models"
+author: "Sreeda Vemuri"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+```{r, message = FALSE, warning = FALSE}
+# remember, you might have to install code packages before you can use them
+library("dplyr")
+library("ggplot2")
+#library("ggrepel")
+library("readr")
+library("readxl") 
+```
+
+# Gun Control
+
+Download the `gunRanks.xlsx` file from our CatCourses page and load the Excel file into R. The data comes from the Law Center to Prevent Gun Violence (source: http://gunlawscorecard.org/). This data has been quoted by media outlets such as Slate and the Rachel Maddow Show. Each of the 50 states were ranked based on the severity of their gun control laws (smaller numbers imply stronger laws) and the prevalence of gun-related deaths (smaller numbers imply more deaths per capita).
+
+```{r, message = FALSE, warning = FALSE}
+gun_law_ranks <- read_excel("gunRanks.xlsx")
+
+# making a linear regression (degree one) model
+linear_fit <- lm(death ~ law, data = gun_law_ranks)
+```
+
+```{r}
+# graphing the data and adding model layer
+gun_law_ranks %>%
+  ggplot(aes(x = law, y = death, label = abbrev)) +
+  geom_point() +
+  geom_text() +
+  #geom_label_repel() + #usuable if you installed the ggrepel package
+  labs(title = "Gun Law Rankings",
+       subtitle = "Regression Models",
+       caption = "Source:  http://gunlawscorecard.org/",
+       x = "Gun Law Rank",
+       y = "Gun Death Rank"
+  ) +
+  stat_smooth(method = "lm", se = FALSE, color = "red",
+              formula = y ~ poly(x, 1, raw = TRUE))
+```
+
+Recall that one way to judge a statistical model is to compute its coefficient of determination.
+
+```{r}
+# extracting the coefficient of determination
+summary(linear_fit)$adj.r.squared
+```
+
+Here we can make a prediction in this silly example (silly because both the x and y data are discrete and ordinal) such as prediction the death rank for a state with a law rank of 32.
+
+```{r}
+predict(linear_fit, newdata = data.frame(law = 32))
+```
+
+---
+
+# Terrorism
+
+Download the `GTDbyYear.csv` file from our CatCourses page and load the Excel file into R. The data is a subset of the Global Terrorism Database from the University of Maryland College Park. We will look at the number of terrorism attacks by year (worldwide).
+
+```{r, message = FALSE, warning = FALSE}
+GTDbyYear <- read_csv("GTDbyYear.csv")
+```
+
+```{r}
+# exponential regression
+exp_fit <- lm(log(attacks) ~ year, data = GTDbyYear)
+
+
+A <- exp(exp_fit$coefficients[1])
+B <- exp(exp_fit$coefficients[2])
+
+exp_function <- function(x){
+  A*B^x
+}
+polyOne_function <- function(x){
+  C*D^x
+}
+```
+
+
+
+
+
+```{r}
+# graphing the data and adding model layer
+GTDbyYear %>%
+  ggplot(aes(x = year, y = attacks)) +
+  geom_point() +
+  stat_function(fun = exp_function, color = "red") +
+  stat_smooth(method = "lm", se = FALSE, color = "orange",
+              formula = y ~ poly(x, 1, raw = TRUE))+
+  stat_smooth(method = "lm", se = FALSE, color = "yellow",
+              formula = y ~ poly(x, 2, raw = TRUE))+
+  stat_smooth(method = "lm", se = FALSE, color = "chartreuse",
+              formula = y ~ poly(x, 3, raw = TRUE))+
+  stat_smooth(method = "lm", se = FALSE, color = "blue",
+              formula = y ~ poly(x, 4, raw = TRUE))+
+  
+   labs(title = "Global Terrorism",
+       subtitle = "Regression Models",
+       caption = "Source: Global Terrorism Database") +
+  theme_minimal()
+```
+
+Your tasks:
+
+1.  Add polynomial regression models to the 'Global Terrorism' graph for degree 1, 2, 3, and 4 polynomials (with different colors)
+2.  Choose the best model from the 4 polynomial regression and the exponential regression models
+
+```{r}
+summary(exp_fit)$adj.r.squared
+summary(lm(attacks ~ poly(year, 1), data = GTDbyYear))$adj.r.squared
+summary(lm(attacks ~ poly(year, 2), data = GTDbyYear))$adj.r.squared
+summary(lm(attacks ~ poly(year, 3), data = GTDbyYear))$adj.r.squared
+summary(lm(attacks ~ poly(year, 4), data = GTDbyYear))$adj.r.squared
+
+```
+
+3.  Predict how many events will be recsfasorded into the Global Terrorism Database in the year 2020.
+According to the R-squared values, the 4th degree polynomial regression is the best model, so we use that model to make our prediction
+
+```{r}
+
+d4 <- (lm(attacks ~ poly(year, 4), data = GTDbyYear))
+predict(d4, newdata = data.frame(year=2020))
+
+```
+
+---
+
+Finally, `knit` your work as either an HTML or PDF document, and upload that document back into the CatCourses assignment.

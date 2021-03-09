@@ -1,0 +1,285 @@
+---
+title: "Binomial Distribution"
+author: "Sreeda Vemuri"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+This assignment will introduce you to the binomial distribution.  First, type your full name in the `author` field above.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+# be sure to run lines of code like this to load code libraries before running subsequent code
+library("ggplot2")
+```
+
+Hint: the keyboard shortcut to create a code-block environment is `CTRL-ALT-I` (`CMD-ALT-I` on a Mac).
+
+---
+
+## Commenting
+
+Inside the code blocks, the typed information after the pound key (#) are called *comments*.  Programmers use comments to remind themselves and teammates what each section of code does.
+
+Run the following chunk of code, try to start to understand how the numbers, variables, and syntax go together.  Write (at least) 5 comments inside the code block to demonstrate your understanding.
+
+```{r}
+# this is an example of a comment
+n <- 10 # sample size
+k <- 5 # median
+p <- 0.32 # probability
+
+kvals <- 0:n
+tf <- kvals == k
+probabilities <- dbinom(kvals, n, p)
+df <- data.frame(kvals, tf, probabilities) 
+
+custom_subtitle <- paste0("n = ", n, ", ",
+                          "k = ", k, ", ",
+                          "p =  ", p, "; ",
+                          "P(k = ", k,
+                          ") = ", round(dbinom(k,n,p), 4)) # assigns letters for the variables, and also assigns a value to a function
+
+ggplot(df, aes(x = kvals, y = probabilities, fill = tf)) + #creates a graph to plot the data above
+  geom_bar(stat = "identity") +
+  labs(title = "Binomial Distribution",
+       subtitle = custom_subtitle,
+       caption = "Math 32",
+       x = "k values",
+       y = "probability") 
+```
+
+---
+
+## Sample Size
+
+Keep the parameters $k = 5$ and $p = 0.32$, but build a couple of graphs for a couple of different values of $n$, ($0 < k < n$), then write a sentence or two about what you observe with the graphs.
+
+### Sample Size Graph 1
+```{r}
+# this is an example of a comment
+n <- 7 # sample size
+k <- 5 # True Value
+p <- 0.32 # probability
+
+kvals <- 0:n
+tf <- kvals == k
+probabilities <- dbinom(kvals, n, p)
+df <- data.frame(kvals, tf, probabilities) 
+
+custom_subtitle <- paste0("n = ", n, ", ",
+                          "k = ", k, ", ",
+                          "p =  ", p, "; ",
+                          "P(k = ", k,
+                          ") = ", round(dbinom(k,n,p), 4)) # assigns letters for the variables, and also assigns a value to a function
+
+ggplot(df, aes(x = kvals, y = probabilities, fill = tf)) + #creates a graph to plot the data above
+  geom_bar(stat = "identity") +
+  labs(title = "Binomial Distribution",
+       subtitle = "Sample Size - 1",
+       caption = "Math 32",
+       x = "k values",
+       y = "probability") 
+```
+
+```{r, echo = TRUE, eval = FALSE}
+
+This graph changes the number of bars in the graph making the "TRUE Value" slightly askew to the median.
+
+```
+
+This graph changes the number of bars in the graph making the "TRUE Value" slightly askew to the median.
+
+### Sample Size Graph 2
+```{r}
+# this is an example of a comment
+n <- 15 # sample size
+k <- 5 # True Value
+p <- 0.32 # probability
+
+kvals <- 0:n
+tf <- kvals == k
+probabilities <- dbinom(kvals, n, p)
+df <- data.frame(kvals, tf, probabilities) 
+
+custom_subtitle <- paste0("n = ", n, ", ",
+                          "k = ", k, ", ",
+                          "p =  ", p, "; ",
+                          "P(k = ", k,
+                          ") = ", round(dbinom(k,n,p), 4)) # assigns letters for the variables, and also assigns a value to a function
+
+ggplot(df, aes(x = kvals, y = probabilities, fill = tf)) + #creates a graph to plot the data above
+  geom_bar(stat = "identity") +
+  labs(title = "Binomial Distribution",
+       subtitle = "Sample Size - 2",
+       caption = "Math 32",
+       x = "k values",
+       y = "probability") 
+```
+```{r, echo = TRUE, eval = FALSE}
+
+This graph also Changes the number of bar, but the k = 5 makes the true value the median of the numbers
+
+```
+
+
+---
+
+## Items Observed
+
+Keep the parameters $n = 10$ and $p = 0.32$, but build a couple of graphs for a couple of different values of $k$, ($0 < k < n$), then write a sentence or two about what you observe with the graphs.
+
+### Items Observed Graph 1
+```{r}
+# this is an example of a comment
+n <- 10 # sample size
+k <- 3 # True Value
+p <- 0.32 # probability
+
+kvals <- 0:n
+tf <- kvals == k
+probabilities <- dbinom(kvals, n, p)
+df <- data.frame(kvals, tf, probabilities) 
+
+custom_subtitle <- paste0("n = ", n, ", ",
+                          "k = ", k, ", ",
+                          "p =  ", p, "; ",
+                          "P(k = ", k,
+                          ") = ", round(dbinom(k,n,p), 4)) # assigns letters for the variables, and also assigns a value to a function
+
+ggplot(df, aes(x = kvals, y = probabilities, fill = tf)) + #creates a graph to plot the data above
+  geom_bar(stat = "identity") +
+  labs(title = "Binomial Distribution",
+       subtitle = "Items Observed - 1",
+       caption = "Math 32",
+       x = "k values",
+       y = "probability") 
+```
+
+```{r, echo = TRUE, eval = FALSE}
+
+I now realize that K = 3 is just highlighting the bar number 3, and causing the True Value to be at 3 and there's no other significance to that value. 
+
+```
+
+### Items Observed Graph 2
+
+```{r}
+# this is an example of a comment
+n <- 10 # sample size
+k <- 8 # True Value
+p <- 0.32 # probability
+
+kvals <- 0:n
+tf <- kvals == k
+probabilities <- dbinom(kvals, n, p)
+df <- data.frame(kvals, tf, probabilities) 
+
+custom_subtitle <- paste0("n = ", n, ", ",
+                          "k = ", k, ", ",
+                          "p =  ", p, "; ",
+                          "P(k = ", k,
+                          ") = ", round(dbinom(k,n,p), 4)) # assigns letters for the variables, and also assigns a value to a function
+
+ggplot(df, aes(x = kvals, y = probabilities, fill = tf)) + #creates a graph to plot the data above
+  geom_bar(stat = "identity") +
+  labs(title = "Binomial Distribution",
+       subtitle = "Items Observed - 2",
+       caption = "Math 32",
+       x = "k values",
+       y = "probability") 
+```
+
+```{r, echo = TRUE, eval = FALSE}
+
+K = 8, makes it so that there a slight chance to get the true value, because it is not close to the median at all. 
+
+```
+
+
+
+
+---
+
+## Prior Probability
+
+Keep the parameters $n = 10$ and $k = 5$, but build a couple of graphs for a couple of different values of $p$, ($0 < p < 1$), then write a sentence or two about what you observe with the graphs.
+
+### Prior Probability Graph 1
+```{r}
+# this is an example of a comment
+n <- 10 # sample size
+k <- 5 # median
+p <- 0.5 # probability
+
+kvals <- 0:n
+tf <- kvals == k
+probabilities <- dbinom(kvals, n, p)
+df <- data.frame(kvals, tf, probabilities) 
+
+custom_subtitle <- paste0("n = ", n, ", ",
+                          "k = ", k, ", ",
+                          "p =  ", p, "; ",
+                          "P(k = ", k,
+                          ") = ", round(dbinom(k,n,p), 4)) # assigns letters for the variables, and also assigns a value to a function
+
+ggplot(df, aes(x = kvals, y = probabilities, fill = tf)) + #creates a graph to plot the data above
+  geom_bar(stat = "identity") +
+  labs(title = "Binomial Distribution",
+       subtitle = "Prior Probability - 1",
+       caption = "Math 32",
+       x = "k values",
+       y = "probability") 
+
+```
+
+```{r, echo = TRUE, eval = FALSE}
+
+The curve appears to be symmetric, and the probability of the event occuring is split perfectly. 
+
+```
+
+### Prior Probability Graph 2
+
+```{r}
+# this is an example of a comment
+n <- 10 # sample size
+k <- 5 # median
+p <- 0.8 # probability
+
+kvals <- 0:n
+tf <- kvals == k
+probabilities <- dbinom(kvals, n, p)
+df <- data.frame(kvals, tf, probabilities) 
+
+custom_subtitle <- paste0("n = ", n, ", ",
+                          "k = ", k, ", ",
+                          "p =  ", p, "; ",
+                          "P(k = ", k,
+                          ") = ", round(dbinom(k,n,p), 4)) # assigns letters for the variables, and also assigns a value to a function
+
+ggplot(df, aes(x = kvals, y = probabilities, fill = tf)) + #creates a graph to plot the data above
+  geom_bar(stat = "identity") +
+  labs(title = "Binomial Distribution",
+       subtitle = "Prior Probability - 2",
+       caption = "Math 32",
+       x = "k values",
+       y = "probability") 
+```
+
+
+```{r, echo = TRUE, eval = FALSE}
+
+The probability of the event occurring, according to the graph is 80%, making the graph askew to the right.
+
+```
+
+
+
+
+---
+
+# Epilogue
+
+You should have 7 graphs in total and (at least) 3 sentences of your observations about the results.
+
+Save your work in the "Math 32_-_Exploration 2_-_Binomial Distribution_-_your name.rmd" convention, `knit` the code, and then upload the HTML file here back into our CatCourses page.

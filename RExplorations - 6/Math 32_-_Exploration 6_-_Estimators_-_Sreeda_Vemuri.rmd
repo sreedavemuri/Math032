@@ -1,0 +1,117 @@
+---
+title: "Exploration 6:  Estimators"
+author: "Sreeda Vemuri"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+```{r, message = FALSE, warning = FALSE}
+library("ggplot2")
+
+# This randomly generates 25 random numbers from an U(0,1) distribution
+one_sample <- runif(25, 0, 1)
+
+# Note that the population variance formula does not have "n - 1"
+bad_var <- function(x){
+  N <- length(x)
+  sigma_squared <- sum( (x - mean(x))^2 ) / N
+  sigma_squared #return this number
+}
+
+# Note that the sample variance formula does have "n - 1"
+good_var <- function(x){
+  n <- length(x)
+  s_squared <- sum( (x - mean(x))^2 ) / (n-1)
+  s_squared #return this number 
+}
+```
+
+## Example
+
+Here we will run a simulation to empirically show that the *population mean*
+$$\mu = \displaystyle\frac{1}{N} \sum_{i = 1}^{N} x_{i}$$
+is **unbiased** when applied to samples over the $U(0,1)$ uniform distribution (whose true population mean is $\mu = \displaystyle\frac{1}{2}$).
+
+```{r, eval = TRUE}
+true_mean <- 1/2
+
+simulation <- replicate(10000, mean( runif(25, 0, 1) ))
+df <- data.frame(simulation)
+
+ggplot(df, aes(x = simulation)) +
+  geom_density(color = "blue") + 
+  geom_vline(xintercept = true_mean, color = "red") +
+  labs(title = "Sample Distribution for the Sample Mean",
+       subtitle = "Blue: sample distribution, Red: statistic of interest",
+       caption = "Math 32", 
+       x = "x",
+       y = "density")
+```
+
+Since the sample distribution empirically does seem to line up with the population mean, we say that the sample mean $\bar{x}$ is *unbiased*.
+
+---
+
+Repeat the simulation above, but with the an $U(0,32)$ distribution and the following estimators:
+
+1.  population variance `bad_var()`
+
+```{r, eval = TRUE}
+true_mean <- 1/2
+
+simulation <- replicate(10000, bad_var( runif(25,0,32) ))
+df <- data.frame(simulation)
+
+ggplot(df, aes(x = simulation)) +
+  geom_density(color = "blue") + 
+  geom_vline(xintercept = true_mean, color = "red") +
+  labs(title = "Sample Distribution for the Sample Mean",
+       subtitle = "Blue: sample distribution, Red: statistic of interest",
+       caption = "Sreeda Vemuri", 
+       x = "x",
+       y = "density")
+```
+
+2.  sample variance `good_var()`
+```{r, eval = TRUE}
+true_mean <- 1/2
+
+simulation <- replicate(10000, good_var(runif(25,0,32) ))
+df <- data.frame(simulation)
+
+ggplot(df, aes(x = simulation)) +
+  geom_density(color = "blue") + 
+  geom_vline(xintercept = true_mean, color = "red") +
+  labs(title = "Sample Distribution for the Sample Mean",
+       subtitle = "Blue: sample distribution, Red: statistic of interest",
+       caption = "Sreeda Vemuri", 
+       x = "x",
+       y = "density")
+```
+
+3.  the sample standard deviation from `good_var()`
+```{r, eval = TRUE}
+true_mean <- 1/2
+
+simulation <- replicate(10000, sqrt(good_var(runif(25,0,32) )))
+df <- data.frame(simulation)
+
+ggplot(df, aes(x = simulation)) +
+  geom_density(color = "blue") + 
+  geom_vline(xintercept = true_mean, color = "red") +
+  labs(title = "Sample Distribution for the Sample Mean",
+       subtitle = "Blue: sample distribution, Red: statistic of interest",
+       caption = "Sreeda Vemuri", 
+       x = "x",
+       y = "density")
+```
+
+
+
+After each simulation, make an educated guess as to whether each estimator is biased or unbiased.
+
+---
+
+Verify that you have 5 graphs in total and replace "Math 32" with your full name in all of the graphs.
+
+Finally, `knit` your work as either an HTML or PDF document, and upload that document back into the CatCourses assignment.

@@ -1,0 +1,178 @@
+---
+title: "Exploration 8:  Hypothesis Testing"
+author: "Sreeda Vemuri"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+toc: true
+theme: cerulean
+---
+
+```{r, message = FALSE, warning = FALSE}
+library("dplyr")   #data wrangling
+library("ggplot2") #data visualization
+library("magrittr") #to use pipes (%>%)
+library("readr")   #to efficiently load a CSV file
+
+```
+
+# Demographics Data
+
+This week we will practice dealing with missing data, and then perform simple hypothesis tests.
+
+Load the spreadsheet file of demographics data with code such as the following.
+
+```{r, echo = TRUE, message = FALSE, warning = FALSE}
+
+df <- read_csv("spring2020demographics.csv", col_names = FALSE)
+colnames(df) <- readLines("demographics_variable_names.txt")
+
+```
+
+---
+
+# Example:  Units
+
+Colloquial claim:  Is the average UCM undergrad student taking more than 15 units?
+
+
+```{r, echo = TRUE, eval = TRUE}
+
+df %>% 
+  select(unitsThisSemester) %>%
+  filter(unitsThisSemester > 0 & unitsThisSemester < 25) %>%
+  ggplot(aes(x = unitsThisSemester)) + 
+  geom_histogram(binwidth = 1, color = "#DAA900", fill = "#002856") +
+  labs(title = "Semester Units",
+       subtitle = "UC Merced undergraduates of Spring 2020",
+       caption = "Math 32",
+       x = "semester units",
+       y = "count") +
+  theme_minimal()
+```
+
+$$\huge \begin{array}{c} H_{0}: \mu = 15 \\ H_{a}: \mu > 15 \end{array}$$
+
+```{r, echo = TRUE, eval = TRUE}
+t.test(df$unitsThisSemester, mu = 15, alternative = "greater")
+```
+
+* Inference:  Since the p-value of the `t.test` is greater than 0.05, we *fail to reject* the claim of a population average of 15 semester units at the $\alpha = 0.05$ significance level.
+
+* Aside: the colors for the histogram are our [UC Merced color brand standards](https://marketing.ucmerced.edu/resources/brand-guidelines/colors).
+
+---
+
+# One-Sided Hypothesis Testing
+
+Here we will roughly answer the question: "Is the campus DC 'appetizing'?".
+
+Recall that the question in the survey was: "**On a scale from 0 to 100-with 0 = "avoid" and 100 = "appetizing"-what do you think of the campus dining commons ("DC")?**" At first glance, it appears that our hypothesis could be at the maximum value of 100.
+
+Try out the following code to get a sense of how many students answered the survey question as intended (that is, how many observations are NOT missing for this variable) and a sense of the distribution of responses:
+
+```{r, echo = TRUE, eval = TRUE}
+sum(!is.na(df$diningCommons))
+summary(df$diningCommons)
+
+```
+
+
+Visualize the `diningCommons` data with a **histogram**.  Label the plot with something like "Appetizing DC?" and label the x-axis with "0 = avoid, 100 = appetizing".
+
+```{r, echo = TRUE, eval = TRUE}
+
+df %>% 
+  select(diningCommons) %>%
+  filter(diningCommons > 0 & diningCommons < 100) %>%
+  ggplot(aes(x = diningCommons)) + 
+  geom_histogram(binwidth = 5, color = "#002856", fill = "#DAA900") +
+  labs(title = "Appetizing DC?",
+       subtitle = "UC Merced undergraduates of Spring 2020",
+       caption = "Sreeda Vemuri",
+       x = "0 = avoid, 100 = appetizing",
+       y = "count") +
+  theme_minimal()
+```
+
+## Test the Claim!
+
+Your task is to run the following, one-sided hypothesis test using the `t.test` function in `R`:
+$$\begin{array}{c} H_{0}: \mu = 100 \\ H_{a}: \mu < 100 \end{array}$$
+Pay attention in particular to the p-value.  How would you interpret that p-value?
+
+
+```{r, echo = TRUE, eval = TRUE}
+t.test(df$politics, mu = 100, alternative = "less")
+```
+---
+
+# Two-Sided Hypothesis Testing
+
+Here we will roughly answer the question: "Are UC Merced students biased politically?"
+
+Recall that the question in the survey was: "On a scale of 0 to 100---with 0 = Democrat and 100 = Republican---where are your political leanings?" At first glance, it appears that our hypothesis should be in the middle at a value of 50.
+
+Try out the following code to get a sense of what proportion of students answered the survey question and the distribution of responses:
+
+```{r, echo = TRUE, eval = TRUE}
+summary(df$politics)
+sum(!is.na(df$politics))/nrow(df) #count of the NOT missing data divided by the number of observations
+```
+
+Visualize the `politics` data with a `boxplot`.  Label the plot with something like "UC Merced Political Climate" and label the $y$-axis with "0 = Democrat, 100 = Republican".
+
+```{r, echo = TRUE, eval = TRUE}
+
+df %>% 
+  select(politics) %>%
+  filter(politics >= 0 & politics <= 100) %>%
+  ggplot(aes(y = politics)) + 
+  geom_boxplot(color = "#DAA900", fill = "darkgreen") +
+  
+  labs(title = "UC Merced Political Climate",
+       subtitle = "UC Merced undergraduates of Spring 2020",
+       caption = "Sreeda Vemuri",
+       x = "0 = Democrat, 100 = Republican",
+       y =  "count" )+
+  theme_minimal()
+
+```
+
+## Test the Claim!
+
+Your task is to perform a two-sided hypothesis test using the `t.test` function in `R`:
+$$\begin{array}{c} H_{0}: \mu = 50 \\ H_{a}: \mu \neq 50 \end{array}$$
+Pay attention in particular to the p-value.  How would you interpret that p-value?
+
+```{r, echo = TRUE, eval = TRUE}
+t.test(df$politics, mu = 50, alternative = "two.sided")
+```
+
+The p - value is smaller than 0.05, therefore we reject the claim. 
+
+
+---
+
+# Follow-Up Questions
+
+Collaborate with your classmates and answer the questions below.  (Hint: you can *explore* the t-tests above.)
+
+(1)  Inference from a two-sided hypothesis test may be different that inference from a one-sided hypothesis test (at the same significance level).
+
+    a. TRUE <--
+    b. FALSE
+    
+(2)  The critical region for a two-sided hypothesis test is twice as large as the critical region for a one-sided hypothesis test.
+
+    a. TRUE
+    b. FALSE <--
+    
+(3)  If we reject a claim for a two-sided hypothesis test, then we reject the same claim for a one-sided hypothesis test (at the same significance level).
+
+    a. TRUE
+    b. FALSE <--
+
+
+---
+
+Finally, `knit` your work as either an HTML or PDF document, and upload that document back into the CatCourses assignment.

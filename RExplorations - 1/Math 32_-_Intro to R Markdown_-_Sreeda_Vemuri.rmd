@@ -1,0 +1,93 @@
+---
+title: "Introduction to R Markdown"
+author: "Sreeda Vemuri"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+This assignment will introduce you to the `R Markdown` coding language.  Moreover, this `R Markdown` file (note the *.rmd extension) is a setting called "literate programming" where a user can alternate between regular typing---enhanced with markdown---and computer code (`R` or `Python`).  For reference, here is RStudio's own [cheat sheet for R Markdown](https://rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
+
+---
+
+Type your full name in the `author` field above.  State your major (including emphasis if applicable) and list your classes---course number and course name---below as an ***ordered-list***, from the one you think will be the most difficult to the least difficult.
+
+##### Major: Computer Science Engineering with Applied Mathematics Minor
+
+##### Classes:
+1. Math 032 - Statistics and Probability
+2. Bio 005 - Biology Today
+3. GASP 010 - Painting
+
+
+
+---
+
+Why are you enrolled in Math 32? What are you hoping to learn and gain? (Please supply an answer that is more in-depth than "This course fulfills my statistics requirement".)
+
+In Math 032, I plan on learning about probability, and maybe it will help me in the long run with stocks and maybe even gambling once in a while. And also trying to make sense of how to understand the different statistics and learn about the validity of the data spreads provided by the news. 
+
+---
+
+In 2-3 sentences, type a science fact that you find fascinating into the code block.  Set the parameters `echo = TRUE` and `eval = FALSE` so that RStudio does not treat the following as R code.
+
+```{r, echo = TRUE, eval = FALSE}
+Stomach Acid can burn trhough steel because of the acidity of Hydrocloric Acid. The PH level is about 2.3 of HydroCloric Acid. And for this reason, if a person does not eat for longs periods of time, in severe causes it causes ulcers in th stomach and throat and in non severe cases, it just causes acidity. 
+```
+
+---
+
+Spend about 5 to 10 minutes typing out your answer to "What are you hopes and goals?" as a ***bullet-point list***.  Do not worry about grammar; just type fast.
+
+- Good Grades
+
+- Understanding Material
+
+- Balancing School and sleep
+
+* (Trying to be social in the Pandemic)
+
+* Helping Mom out
+
+* Interships
+* Resume
+* GMAT prep
+* Passport renewal
+* Apartment hunt -FAll
+* Email professors- remote learning??
+* Laundry
+* Future-4bed House
+* Also future- small backyard
+* MBA in New York
+* Car-aventador S
+* Build PC before Fall 2020
+* JOB HUNT
+* Scholarships?
+* internship remote possibilites? 
+* Be respectable at job
+* Cool closet
+* i honestly don't know anymore
+
+
+---
+
+Spend about 5 minutes typing out your answer to "What are your fears and obstacles?" into the code block.  Set the parameters `echo = FALSE` so that you do not show this part to your teachers and `eval = FALSE` so that RStudio does not treat the following as R code.
+
+```{r, echo = FALSE, eval = FALSE}
+*Opening up
+*crying in public
+*Being abandoned
+*Being homeless
+*beliveing someone and getting my heart broken. 
+
+```
+
+---
+
+For this semester, instructor Derek wants to assemble a class playlist of popular music.  What is a good, lively song to add to a class playlist?  Place the song title between asterisks to *italicize* the song title and place the artist between two-pairs of asterisks so that the artist name appears in **boldface**.  (Beyond profanity, please avoid offensive content.)
+
+*I Like Me Better* -- **Lauv**
+
+
+---
+
+Save your work in the "Introduction_-_your name.rmd" convention, `knit` the code, and then upload the HTML file here back into our CatCourses page.

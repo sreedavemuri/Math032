@@ -1,0 +1,188 @@
+---
+title: "Math 32:  Exploration 5"
+author: "Sreeda Vemuri"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+        theme: cerulean
+---
+
+In this `exploration`, you are asked to
+
+* look at various examples of correlated data
+* look at an example of Simpson's Paradox
+
+1. First,
+    a. Type your name into the author field in the YAML parameters above
+    b. Also save this file while replacing "template" with your full name (be sure to keep the *.rmd file format).
+
+```{r, message = FALSE, warning = FALSE}
+# load useful code packages
+library("dplyr")
+library("ggplot2")
+
+# a user-made function to create correlated values
+# INPUTS: vector of x values, 
+#         desired correlation level (default = 0.9)
+# OUTPUT: vector of y values
+correlatedValues = function(x, r = 0.9){
+  r2 = r**2
+  ve = 1-r2
+  SD = sqrt(ve)
+  e  = rnorm(length(x), mean=0, sd=SD)
+  y  = r*x + e
+  return(y)
+}
+
+# create synthetic data for the Simpson's Paradox demonstration
+x1 = rnorm(100, mean = -6, sd = 1)
+y1 = correlatedValues(x1, r = 0.75) + 6
+x2 = rnorm(100, mean = -3, sd = 1)
+y2 = correlatedValues(x2, r = 0.75) + 3
+x3 = rnorm(100, mean = 0, sd = 1)
+y3 = correlatedValues(x3, r = 0.75)
+x4 = rnorm(100, mean = 3, sd = 1)
+y4 = correlatedValues(x4, r = 0.75) - 3
+x5 = rnorm(100, mean = 6, sd = 1)
+y5 = correlatedValues(x5, r = 0.75) - 6
+df1 <- data.frame(x1, y1, "group 1")
+df2 <- data.frame(x2, y2, "group 2")
+df3 <- data.frame(x3, y3, "group 3")
+df4 <- data.frame(x4, y4, "group 4")
+df5 <- data.frame(x5, y5, "group 5")
+names(df1) <- c("xdata", "ydata", "group")
+names(df2) <- c("xdata", "ydata", "group")
+names(df3) <- c("xdata", "ydata", "group")
+names(df4) <- c("xdata", "ydata", "group")
+names(df5) <- c("xdata", "ydata", "group")
+main_df <- rbind(df1, df2, df3, df4, df5)
+```
+
+# Correlation
+
+2. Read through and run the following example code block.  Try to understand what the code does and demonstrate your understanding with (at least) 5 code comments.
+
+```{r}
+r_val <- 0.1337
+x_vals <- rnorm(100) #total 100 points on the plot
+y_vals <- correlatedValues(x_vals, r = r_val)
+temp_df <- data.frame(x_vals, y_vals) #
+ggplot(temp_df, aes(x = x_vals, y = y_vals)) +
+  geom_point() +
+  labs(title = paste0("Bivariate Data (r = ", r_val, ")"),
+       subtitle = "virtually uncorrelated data",
+       caption = "Math 32")
+```
+
+3.  Produce 4 graphs like the one above
+
+* each in its own code block
+* one example for each level of correlation in the table below
+* place the respective description in the subtitle
+* replace "Math 32" with your full name
+
+| Correlation Value | Description                        |
+|-------------------|------------------------------------|
+| $-1 < r < -0.7$     | strongly and negatively correlated |
+| $-0.7 < r < -0.4$   | weakly and negatively correlated   |
+| $0.4 < r < 0.7$     | weakly and positively correlated   |
+| $0.7 < r < 1$       | strongly and positively correlated |
+
+```{r}
+r_val <- -0.9
+x_vals <- rnorm(100) #total 100 points on the plot
+y_vals <- correlatedValues(x_vals, r = r_val)
+temp_df <- data.frame(x_vals, y_vals) #
+ggplot(temp_df, aes(x = x_vals, y = y_vals)) +
+  geom_point() +
+  labs(title = paste0("Bivariate Data (r = ", r_val, ")"),
+       subtitle = "virtually uncorrelated data",
+       caption = "Sreeda Vemuri")
+```
+
+```{r}
+r_val <- -0.6
+x_vals <- rnorm(100) #total 100 points on the plot
+y_vals <- correlatedValues(x_vals, r = r_val)
+temp_df <- data.frame(x_vals, y_vals) #
+ggplot(temp_df, aes(x = x_vals, y = y_vals)) +
+  geom_point() +
+  labs(title = paste0("Bivariate Data (r = ", r_val, ")"),
+       subtitle = "virtually uncorrelated data",
+       caption = "Sreeda Vemuri")
+```
+
+```{r}
+r_val <- 0.5
+x_vals <- rnorm(100) #total 100 points on the plot
+y_vals <- correlatedValues(x_vals, r = r_val)
+temp_df <- data.frame(x_vals, y_vals) #
+ggplot(temp_df, aes(x = x_vals, y = y_vals)) +
+  geom_point() +
+  labs(title = paste0("Bivariate Data (r = ", r_val, ")"),
+       subtitle = "virtually uncorrelated data",
+       caption = "Sreeda Vemuri")
+```
+
+```{r}
+r_val <- 0.8
+x_vals <- rnorm(100) #total 100 points on the plot
+y_vals <- correlatedValues(x_vals, r = r_val)
+temp_df <- data.frame(x_vals, y_vals) #
+ggplot(temp_df, aes(x = x_vals, y = y_vals)) +
+  geom_point() +
+  labs(title = paste0("Bivariate Data (r = ", r_val, ")"),
+       subtitle = "virtually uncorrelated data",
+       caption = "Sreeda Vemuri")
+```
+4.  Write (at least) two sentences to describe what you observe with the above visuals.
+
+The Bivariable graph's above have a different scatter for all of them, the only differece appears to that 2 are more clear than the other. The r's that are closer to 1 are more clear in the distribution of the scatter. 
+
+# Simpsons Paradox
+
+5.  Run the next code block to get a sense of its calculations.
+
+```{r}
+main_df %>%
+  ggplot(aes(x = xdata, y = ydata)) +
+  geom_point() +
+  labs(title = "Simpson's Paradox",
+       subtitle = "all together",
+       caption = "Math 32")
+```
+
+```{r}
+# compute correlation
+main_df %>%
+  summarize(cor = cor(xdata, ydata))
+```
+
+```{r}
+main_df %>%
+  group_by(group) %>%  
+  ggplot(aes(x = xdata, y = ydata, color = group)) +
+  geom_point() +
+  labs(title = "Simpson's Paradox",
+       subtitle = "seperate groups",
+       caption = "Sreeda Vemuri")
+```
+```{r}
+# compute correlation
+main_df %>%
+   group_by(group) %>%
+  summarize(cor = cor(xdata, ydata))
+```
+
+6.  Repeat the previous code block, but
+
+* add `color = group` in the ggplot aesthetics
+* add `group_by(group) %>%` after each pipe operator
+* replace the subtitle with "separate groups"
+* replace "Math 32" with your full name
+
+7.  Write (at least) two sentences to describe what you observe in the above two sets of graphs and calculations.
+
+In the first graph of the Simpson's Paradox, the graph appeared to have a negative slope in the scatter. Whereas, in the 2nd scatter, there were 5 seperate "scatters" which all had a positive scatter slope. 
+
+8. Finally, `knit` your work as either an HTML or PDF document, and upload that document back into the CatCourses assignment.
